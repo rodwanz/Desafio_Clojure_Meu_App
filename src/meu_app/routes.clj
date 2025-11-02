@@ -9,7 +9,7 @@
   {:id uuid :name name :book book})
 
 (defn posting [request]
-  ({:status 200 :body @(:reporting request)}))
+  {:status 200 :body "ok"})
 
 (defn posting-database [request]
   (let [uuid (java.util.UUID/randomUUID)
