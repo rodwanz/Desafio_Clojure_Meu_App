@@ -6,6 +6,7 @@
   component/Lifecycle
 
   (start [this]
+    (println "Start routes component")
     (assoc this :routes routes/routes))
 
   (stop [this]

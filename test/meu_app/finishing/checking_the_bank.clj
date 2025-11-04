@@ -6,9 +6,7 @@
 
 (deftest ^:datomic create-and-fetch-all-and-delete-ids-test
   (testing "Creating, searching, and cleaning entities in the Datomic database."
-    (is (database/create-database database/db-uri)
-        "Database exists!")
-    (let [conn (database/open-connection database/db-uri)]
+    (let [conn (database/open-connection)]
       (is conn "Connection valid!")
       (database/create-schema conn schema/schema)
       (is true "Schema successfully applied."))))

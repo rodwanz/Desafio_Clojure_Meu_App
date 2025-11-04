@@ -4,6 +4,9 @@
     <option name="buildSystemId" value="LEININGEN" />
     <option name="displayName" value="meu-app:0.1.0-SNAPSHOT" />
   </component>
+  <component name="CheckStyle-IDEA-Module" serialisationVersion="2">
+    <option name="activeLocationsIds" />
+  </component>
   <component name="NewModuleRootManager">
     <output url="file://$MODULE_DIR$/target/classes" />
     <output-test url="file://$MODULE_DIR$/target/classes" />

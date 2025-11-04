@@ -32,9 +32,15 @@
           db-interceptor {:name  :db-interceptor
                           :enter assoc-informad-database}
           service-map-base {::http/routes (:routes routes)
+                            ::http/allowed-origins {:creds true :allowed-origins (constantly true)}
+                            ::http/secure-headers {:content-security-policy-settings {:object-src "'none'"}}
+                            ::http/host "localhost"
                             ::http/port   9999
                             ::http/type   :jetty
-                            ::http/join?  false}
+                            ::http/join?  false
+                            ::http/enable-websockets? false
+                            ::http/container-options {:h2c? true, :h2? false, :ssl? false}
+                            ::http/level :warn}
           service-map (-> service-map-base
                           (http/default-interceptors)
                           (update ::http/interceptors conj (i/interceptor db-interceptor)))]
