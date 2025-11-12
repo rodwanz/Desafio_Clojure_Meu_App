@@ -6,35 +6,35 @@
                             :livro ""
                             :itens []}))
 
-(defn adicionar-item []
-      (let [{:keys [autor livro]} @app-state]
-           (when (and (not-empty autor) (not-empty livro))
-                 (swap! app-state update :itens conj {:autor autor :livro livro})
-                 (swap! app-state assoc :autor "" :livro ""))))
+(defn add-item []
+      (let [{:keys [author book]} @app-state]
+           (when (and (not-empty author) (not-empty book))
+                 (swap! app-state update :items conj {:autor author :book book})
+                 (swap! app-state assoc :author "" :book ""))))
 
-(defn resetar []
-      (reset! app-state {:autor "" :livro "" :itens []}))
+(defn reset []
+      (reset! app-state {:author "" :book "" :items []}))
 
 (defn app []
-      (let [{:keys [autor livro itens]} @app-state]
+      (let [{:keys [author book items]} @app-state]
            [:div
-            [:h2 "Cadastro de Livros"]
+            [:h2 "Book Registration"]
             [:input {:type "text"
-                     :placeholder "Autor"
-                     :value autor
-                     :on-change #(swap! app-state assoc :autor (.. % -target -value))}]
+                     :placeholder "Author"
+                     :value author
+                     :on-change #(swap! app-state assoc :author (.. % -target -value))}]
             [:input {:type "text"
-                     :placeholder "Livro"
-                     :value livro
-                     :on-change #(swap! app-state assoc :livro (.. % -target -value))}]
+                     :placeholder "Book"
+                     :value book
+                     :on-change #(swap! app-state assoc :book (.. % -target -value))}]
             [:div
-             [:button {:on-click adicionar-item} "Adicionar"]
-             [:button {:on-click resetar
-                       :style {:background-color "#dc3545"}} "Resetar"]]
+             [:button {:on-click add-item} "Add"]
+             [:button {:on-click reset
+                       :style {:background-color "#dc3545"}} "Reset"]]
             [:ul
-             (for [{:keys [autor livro]} itens]
-                  ^{:key (str autor livro)}
-                  [:li (str autor " - " livro)])]]))
+             (for [{:keys [author book]} items]
+                  ^{:key (str author book)}
+                  [:li (str author " - " book)])]]))
 
 (defn ^:dev/after-load start []
       (rdom/render [app] (.getElementById js/document "app")))
