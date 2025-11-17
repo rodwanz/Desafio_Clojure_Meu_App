@@ -4,7 +4,7 @@
   (:import (java.util UUID)))
 
 (defn start-function [request]
-  {:status 200 :body (str "Flowing!" (get-in request [:query-params :name]))})
+  {:status 200 :body (str "Flowing!" (get-in request [:json-params :name]))})
 
 (defn mapping-posting [uuid name book]
   {:id uuid :name name :book book})
@@ -14,12 +14,12 @@
    :headers {"Content-Type" "application/json"}
    :body (json/generate-string
            {:message "Data posted successfully!"
-            :params (:query-params request)})})
+            :params (:json-params request)})})
 
 (defn posting-database [request]
   (let [uuid (java.util.UUID/randomUUID)
-        name (get-in request [:query-params :name])
-        book (get-in request [:query-params :book])
+        name (get-in request [:json-params :name])
+        book (get-in request [:json-params :book])
         informed-database (mapping-posting uuid name book)
         store (:store request)]
     (swap! store assoc uuid informed-database)

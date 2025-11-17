@@ -2,15 +2,26 @@
   (:require [reagent.core :as r]
             [reagent.dom :as rdom]))
 
-(defonce app-state (r/atom {:autor ""
-                            :livro ""
-                            :itens []}))
+(defonce app-state (r/atom {:author ""
+                            :book ""
+                            :items []}))
 
 (defn add-item []
       (let [{:keys [author book]} @app-state]
            (when (and (not-empty author) (not-empty book))
-                 (swap! app-state update :items conj {:autor author :book book})
+                 (-> (js/fetch "http://localhost:9999/posting-in-database"
+                               (clj->js
+                                 {:method "POST"
+                                  :headers {"Content-Type" "application/json"}
+                                  :body (js/JSON.stringify
+                                          #js {:name author
+                                               :book book})}))
+                     (.then #(.-json %))
+                     (.then (fn [response]
+                                (js/console.log "Saved in backend:" response)))
+                     (.catch #(js/console.error "Error:" %)))
                  (swap! app-state assoc :author "" :book ""))))
+
 
 (defn reset []
       (reset! app-state {:author "" :book "" :items []}))
