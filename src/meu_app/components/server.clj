@@ -22,7 +22,7 @@
   (stop-server)
   (start-server service-map))
 
-(defrecord Server [database routes]
+(defrecord Server [database routes datomic]
   component/Lifecycle
 
   (start [this]
@@ -31,6 +31,10 @@
                         (update context :request assoc :store (:store database)))
           db-interceptor {:name  :db-interceptor
                           :enter assoc-informad-database}
+          assoc-datomic (fn [context]
+                          (update context :request assoc :datomic datomic))
+          datomic-interceptor {:name  :datomic-interceptor
+                               :enter assoc-datomic}
           service-map-base {::http/routes (:routes routes)
                             ::http/allowed-origins {:creds true :allowed-origins (constantly true)}
                             ::http/secure-headers {:content-security-policy-settings {:object-src "'none'"}}
@@ -43,6 +47,7 @@
                             ::http/level :warn}
           service-map (-> service-map-base
                           (http/default-interceptors)
+                          (update ::http/interceptors conj datomic-interceptor)
                           (update ::http/interceptors conj (i/interceptor db-interceptor)))]
 
     ;(start-server)
