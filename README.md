@@ -1,199 +1,223 @@
 # 📚 Book Registration --- Fullstack Clojure + ClojureScript
 
-Um projeto completo demonstrando integração entre:
+A complete project demonstrating integration between:
 
--   **Frontend:** ClojureScript + Reagent\
--   **Backend:** Clojure + Pedestal\
--   **Armazenamento:** Atom em memória + componente opcional Datomic\
--   **Arquitetura:** Stuart Sierra Component
+- **Frontend:** ClojureScript + Reagent
+- **Backend:** Clojure + Pedestal
 
-O usuário registra **Autor** e **Livro**, e os dados são enviados ao
-backend e armazenados.
+- **Storage:** In-memory Atom + optional Datomic component
 
-------------------------------------------------------------------------
+- **Architecture:** Stuart Sierra Component
 
-## ✨ Funcionalidades
-
--   Interface simples para cadastrar livros\
--   Envio de dados via `fetch` (JSON)\
--   Backend Pedestal com rotas REST\
--   Armazenamento em memória com `atom`\
--   Remoção via DELETE\
--   Componente Datomic totalmente funcional\
--   Sistema modular com *Component Architecture*
+The user registers **Author** and **Book**, and the data is sent to the backend and stored.
 
 ------------------------------------------------------------------------
 
-## 🧱 Estrutura do Projeto
+## ✨ Features
 
-    project/
-     ├── front-app/
-     │    └── core.cljs              # Frontend Reagent
-     │
-     ├── meu-app/
-     │    ├── main.clj               # Entry point
-     │    ├── routes.clj             # Rotas Pedestal
-     │    ├── components/
-     │    │     ├── server.clj       # Servidor Pedestal
-     │    │     ├── routes-component.clj
-     │    │     ├── database.clj     # Atom em memória
-     │    │     ├── datomic.clj      # Componente Datomic
-     │    │     └── system.clj       # Montagem do sistema
-     │    │
-     │    ├── datomic/
-     │    │     ├── database.clj     # Funções utilitárias Datomic
-     │    │     └── schema.clj       # Schema Datomic
-     │    │
-     │    └── posting/
-     │          ├── model.clj        # Modelo de dados
-     │          └── launching-books.clj
-     │
-     └── README.md
+- Simple interface for registering books
+- Data sending via `fetch` (JSON)
+- Pedestal backend with REST routes
+- In-memory storage with `atom`
+- Removal via DELETE
+
+- Fully functional Datomic component
+
+- Modular system with *Component Architecture*
+
+------------------------------------------------------------------------
+
+## 🧱 Project Structure
+
+project/
+
+├── front-app/
+
+│ └── core.cljs # Reagent Frontend
+
+│
+
+├── meu-app/
+
+│ ├── main.clj # Entry point
+
+│ ├── routes.clj # Pedestal Routes
+
+│ ├── components/
+│ │ ├── server.clj # Pedestal Server
+│ │ ├── routes-component.clj
+│ │ ├── database.clj # In-memory Atom
+│ │ ├── datomic.clj # Datomic Component
+│ │ └── system.clj # System Setup
+│ │
+
+│ ├── datomic/
+│ │ ├── database.clj # Datomic Utility Functions
+│ │ └── schema.clj # Datomic Schema
+│ │
+
+│ └── posting/
+│ ├── model.clj # Data Model
+
+│ └── launching-books.clj
+
+│
+
+└── README.md
 
 ------------------------------------------------------------------------
 
 # 🖥️ Frontend (ClojureScript + Reagent)
 
-### Arquivo principal: `front-app.core`
+### Main file: `front-app.core`
 
-### Principais responsabilidades
+### Main responsibilities
 
--   Gerenciar estado via `r/atom`
--   Inputs de autor e livro
--   Enviar POST ao backend via `fetch`
--   Limpar campos após envio
--   Renderizar interface no HTML
+- Manage state via `r/atom`
 
-### Trecho de envio ao backend
+- Author and book inputs
+- Send POST to the backend via `fetch`
+- Clear fields after sending
+- Render interface in HTML
+
+### Snippet of sending to the backend
 
 ``` clojure
 (js/fetch "http://localhost:9999/posting-in-database"
-  (clj->js {:method "POST"
-            :headers {"Content-Type" "application/json"}
-            :body (js/JSON.stringify
-                     #js {:name author :book book})}))
+
+(clj->js {:method "POST"
+
+:headers {"Content-Type" "application/json"}
+
+:body (js/JSON.stringify
+#js {:name author :book book})}))
 ```
 
 ------------------------------------------------------------------------
 
 # 🧩 Backend (Clojure + Pedestal)
 
-## 🚏 Rotas (`meu-app.routes`)
+## 🚏 Routes (`my-app.routes`)
 
-### Endpoints disponíveis
+### Available Endpoints
 
-  Método   Rota                         Descrição
-  -------- ---------------------------- -------------------
-  GET      `/start`                     Teste simples
-  POST     `/posting-in-database`       Salva livro
-  GET      `/posting-in-database`       Endpoint auxiliar
-  DELETE   `/posting-in-database/:id`   Remove livro
+Route Method Description
 
-### Salvando dados
+-------- ---------------------------- -------------------
+
+GET `/start` Simple Test
+
+POST `/posting-in-database` Saves book
+
+GET `/posting-in-database` Auxiliary Endpoint
+
+DELETE `/posting-in-database/:id` Removes book
+
+### Saving Data
 
 ``` clojure
 (defn posting-database [request]
-  (let [uuid (UUID/randomUUID)
-        name (get-in request [:json-params :name])
-        book (get-in request [:json-params :book])]
-    (swap! store assoc uuid {:id uuid :name name :book book})
-    {:status 200 :body ...}))
+
+(let [uuid (UUID/randomUUID)
+
+name (get-in request [:json-params :name])
+
+book (get-in request [:json-params :book])]
+
+(swap! store assoc uuid {:id uuid :name name :book book})
+
+{:status 200 :body ...}))
+
 ```
 
 ------------------------------------------------------------------------
 
-# 🧱 Componentes (Stuart Sierra Component)
+# 🧱 Components (Stuart Sierra Component)
 
 ## 🗄️ `database`
 
--   Banco em memória usando `atom`
--   Criado ao iniciar o sistema
+- In-memory database using `atom`
+
+- Created when the system starts
 
 ## 🗃️ `datomic`
 
--   Abre conexão Datomic
--   Aplica schema automaticamente
+- Opens a Datomic connection
+- Applies schema automatically
 
 ## 🌐 `routes-component`
 
--   Expõe rotas Pedestal como componente
+- Exposes Pedestal routes as a component
 
 ## 🚀 `server`
 
--   Configura e inicia o servidor Pedestal
--   Injeta `store` dentro da request via interceptor
+- Configures and starts the Pedestal server
+- Injects `store` into the request via interceptor
 
 ## 🔧 `system`
 
--   Monta todos os componentes:
+- Assemble all components:
 
 ``` clojure
-(component/system-map
-  :database (database/new-database)
-  :datomic  (datomic/new-datomic)
-  :routes   (routes/new-routes)
-  :server   (component/using (server/new-server)
-                             [:database :datomic :routes]))
+(component/system-map 
+:database (database/new-database) 
+:datomic (datomic/new-datomic) 
+:routes (routes/new-routes) 
+:server (component/using (server/new-server) 
+[:database :datomic :routes]))
 ```
 
 ------------------------------------------------------------------------
 
 # 🗃️ Datomic
 
-## 🔤 Schema (`meu-app.datomic.schema`)
+## 🔤 Schema (`my-app.datomic.schema`)
 
 ``` clojure
-[{:db/ident :book/title :db/valueType :db.type/string ...}
- {:db/ident :book/autor :db/valueType :db.type/string ...}]
+[{:db/ident :book/title :db/valueType :db.type/string ...} 
+{:db/ident :book/author :db/valueType :db.type/string ...}]
 ```
 
-## 📥 Inserção de livros (`model/new-book`)
+## 📥 Book insertion (`model/new-book`)
 
 ``` clojure
 {:book/title title
- :book/autor author}
+
+:book/autor author}
 ```
 
 ------------------------------------------------------------------------
 
-# ▶️ Como executar
+# ▶️ How to run
 
-## **1. Iniciar o backend**
+## **1. Start the backend**
 
-``` 
-Esta sendo executado (Run -main - meu-app.main) direto no sistema
+``` This is being executed (Run -main - my-app.main) directly on the system
 ```
 
-Servidor disponível em:
+Server available at:
 
-    http://localhost:9999
+http://localhost:9999
 
 ------------------------------------------------------------------------
 
-## **2. Iniciar o frontend (Shadow-CLJS exemplo)**
+## **2. Start the frontend (Shadow-CLJS example)**
 
 ``` sh
 npm install
 npx shadow-cljs watch app
 ```
 
-Abra:
+Open:
 
-    http://localhost:3000
-
-------------------------------------------------------------------------
-
-# 🔄 Fluxo completo
-
-1.  Usuário preenche "Autor" e "Livro"
-2.  Frontend envia JSON ao backend
-3.  Backend cria UUID e armazena no banco em memória
-4.  Retorna JSON confirmando operação
-5.  Frontend exibe no console
+http://localhost:3000
 
 ------------------------------------------------------------------------
 
+# 🔄 Complete Flow
 
-# 📜 Licença
-
-MIT --- livre para uso.
+1. User fills in "Author" and "Book"
+2. Frontend sends JSON to the backend
+3. Backend creates UUID and stores it in the database in memory
+4. Returns JSON confirming the operation
+5. Frontend
