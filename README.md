@@ -172,12 +172,12 @@ DELETE `/posting-in-database/:id` Removes book
 - Assemble all components:
 
 ``` clojure
-(component/system-map 
-:database (database/new-database) 
-:datomic (datomic/new-datomic) 
-:routes (routes/new-routes) 
-:server (component/using (server/new-server) 
-[:database :datomic :routes]))
+(defn local-environment []
+  (component/system-map
+    :database (database/new-database)
+    :datomic  (datomic/new-datomic)
+    :routes   (routes/new-routes)
+    :server   (component/using (server/new-server) [:database :datomic :routes])))
 ```
 
 ------------------------------------------------------------------------
