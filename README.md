@@ -117,16 +117,21 @@ DELETE `/posting-in-database/:id` Removes book
 
 ``` clojure
 (defn posting-database [request]
+  (let [conn (:conn (:datomic request))
+        name (get-in request [:json-params :name])
+        book (get-in request [:json-params :book])]
 
-(let [uuid (UUID/randomUUID)
+    (let [tx @(d/transact conn
+                          [{:book/title book
+                            :book/autor name}])
+          entity-id (-> tx :tempids vals first)]
 
-name (get-in request [:json-params :name])
-
-book (get-in request [:json-params :book])]
-
-(swap! store assoc uuid {:id uuid :name name :book book})
-
-{:status 200 :body ...}))
+      {:status 200
+       :headers {"Content-Type" "application/json"}
+       :body (json/generate-string
+               {:message "Saved successfully!"
+                :entity-id entity-id
+                :data {:name name :book book}})})))
 
 ```
 
