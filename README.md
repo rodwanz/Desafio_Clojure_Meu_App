@@ -83,14 +83,21 @@ project/
 ### Snippet of sending to the backend
 
 ``` clojure
-(js/fetch "http://localhost:9999/posting-in-database"
-
-(clj->js {:method "POST"
-
-:headers {"Content-Type" "application/json"}
-
-:body (js/JSON.stringify
-#js {:name author :book book})}))
+(defn add-item []
+      (let [{:keys [author book]} @app-state]
+           (when (and (not-empty author) (not-empty book))
+                 (-> (js/fetch "http://localhost:9999/posting-in-database"
+                               (clj->js
+                                 {:method "POST"
+                                  :headers {"Content-Type" "application/json"}
+                                  :body (js/JSON.stringify
+                                          #js {:name author
+                                               :book book})}))
+                     (.then #(.-json %))
+                     (.then (fn [response]
+                                (js/console.log "Saved in backend:" response)))
+                     (.catch #(js/console.error "Error:" %)))
+                 (swap! app-state assoc :author "" :book "")))))}))
 ```
 
 ------------------------------------------------------------------------
