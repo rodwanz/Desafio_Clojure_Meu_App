@@ -187,16 +187,22 @@ DELETE `/posting-in-database/:id` Removes book
 ## 🔤 Schema (`my-app.datomic.schema`)
 
 ``` clojure
-[{:db/ident :book/title :db/valueType :db.type/string ...} 
-{:db/ident :book/author :db/valueType :db.type/string ...}]
+(def schema [{:db/ident       :book/title
+              :db/valueType   :db.type/string
+              :db/cardinality :db.cardinality/one
+              :db/doc         "Title Book"}
+             {:db/ident       :book/autor
+              :db/valueType   :db.type/string
+              :db/cardinality :db.cardinality/one
+              :db/doc         "Identifying the Author's Name"}])...}]
 ```
 
 ## 📥 Book insertion (`model/new-book`)
 
 ``` clojure
-{:book/title title
-
-:book/autor author}
+(defn new-book [title author]
+  {:book/title title
+   :book/autor author})
 ```
 
 ------------------------------------------------------------------------
