@@ -30,40 +30,29 @@ The user registers **Author** and **Book**, and the data is sent to the backend 
 ## 🧱 Project Structure
 
 project/
+ ├── front-app/
+ │    └── core.cljs              # Frontend Reagent
+ │
+ ├── meu-app/
+ │    ├── main.clj               # Entry point
+ │    ├── routes.clj             # Rotas Pedestal
+ │    ├── components/
+ │    │     ├── server.clj       # Servidor Pedestal
+ │    │     ├── routes-component.clj
+ │    │     ├── database.clj     # Atom em memória
+ │    │     ├── datomic.clj      # Componente Datomic
+ │    │     └── system.clj       # Montagem do sistema
+ │    │
+ │    ├── datomic/
+ │    │     ├── database.clj     # Funções utilitárias Datomic
+ │    │     └── schema.clj       # Schema Datomic
+ │    │
+ │    └── posting/
+ │          ├── model.clj        # Modelo de dados
+ │          └── launching-books.clj
+ │
+ └── README.md
 
-├── front-app/
-
-│ └── core.cljs # Reagent Frontend
-
-│
-
-├── meu-app/
-
-│ ├── main.clj # Entry point
-
-│ ├── routes.clj # Pedestal Routes
-
-│ ├── components/
-│ │ ├── server.clj # Pedestal Server
-│ │ ├── routes-component.clj
-│ │ ├── database.clj # In-memory Atom
-│ │ ├── datomic.clj # Datomic Component
-│ │ └── system.clj # System Setup
-│ │
-
-│ ├── datomic/
-│ │ ├── database.clj # Datomic Utility Functions
-│ │ └── schema.clj # Datomic Schema
-│ │
-
-│ └── posting/
-│ ├── model.clj # Data Model
-
-│ └── launching-books.clj
-
-│
-
-└── README.md
 
 ------------------------------------------------------------------------
 
